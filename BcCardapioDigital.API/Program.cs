@@ -9,7 +9,7 @@ using System.Text;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-var connectionString = Environment.GetEnvironmentVariable("DATABASE_CONNECTION_STRING");
+var connectionString = "postgresql://dbcardapio_bqew_user:IPhDK2DSeyEfNOtzdYRF6Z3elhe3TPUj@dpg-cs6k5lrtq21c73du3sug-a/dbcardapio_bqew";
 
 builder.Services.AddDbContext<AppDbContext>(opts => opts.UseNpgsql(connectionString));
 
