@@ -8,7 +8,7 @@ WORKDIR /app
 EXPOSE 8080
 EXPOSE 8081
 
-ENV DATABASE_CONNECTION_STRING="Host=dpg-cs6k5lrtq21c73du3sug-a.oregon-postgres.render.com;Database=dbcardapio_bqew;Username=dbcardapio_bqew_user;Password=IPhDK2DSeyEfNOtzdYRF6Z3elhe3TPUj;Port=5432;SSL Mode=Require;Trust Server Certificate=true"
+
 
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
