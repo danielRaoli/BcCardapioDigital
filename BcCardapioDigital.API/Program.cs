@@ -53,9 +53,10 @@ builder.Services.AddAuthentication(options =>
 
 builder.Services.AddCors(opts => opts.AddPolicy("AppCors", policy =>
 {
-    policy.AllowAnyOrigin()
+    policy.WithOrigins("http://localhost:5173")
     .AllowAnyHeader()
-    .AllowAnyMethod();
+    .AllowAnyMethod()
+    .AllowCredentials();
 
 }));
 
