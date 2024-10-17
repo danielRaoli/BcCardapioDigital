@@ -21,9 +21,9 @@ namespace BcCardapioDigital.API.Application.Services
                 return new Response<Categoria?>(null, 500, "Não foi possivel criar o categoria");
             }
 
-            if (request.Image is not null)
+            if (request.Imagem is not null)
             {
-                if (await TentarAtualizarImage(request.Image, entity))
+                if (await TentarAtualizarImage(request.Imagem, entity))
                 {
                     result = await _repositorio.Atualizar(entity);
                 }
@@ -94,7 +94,7 @@ namespace BcCardapioDigital.API.Application.Services
 
             if (imageUrl is not null)
             {
-                entity.ImageUrl = imageUrl;
+                entity.Imagem = imageUrl;
                 return true;
             }
 

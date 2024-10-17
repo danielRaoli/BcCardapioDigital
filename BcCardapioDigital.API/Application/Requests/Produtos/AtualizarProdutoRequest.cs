@@ -13,7 +13,7 @@ namespace BcCardapioDigital.API.Application.Requests.Produtos
         public string Descricao { get; set; } = string.Empty;
         [Required(ErrorMessage = "Preencha todos os campos obrigatórios")]
         public decimal Preco { get; set; }  
-        public IFormFile? Foto { get; set; }
+        public IFormFile? Imagem { get; set; }
         [Required(ErrorMessage = "Preencha todos os campos obrigatórios")]
         public int CategoriaId { get; set; }
     }

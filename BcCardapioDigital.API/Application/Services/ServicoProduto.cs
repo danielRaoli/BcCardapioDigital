@@ -22,9 +22,9 @@ namespace BcCardapioDigital.API.Application.Services
                 return new Response<Produto?>(null, 500, "Não foi possivel criar o produto");
             }
 
-            if (request.Foto is not null)
+            if (request.Imagem is not null)
             {
-                if (await TentarAtualizarImage(request.Foto, entity))
+                if (await TentarAtualizarImage(request.Imagem, entity))
                 {
                     result = await _repositorio.Atualizar(entity);
                 }
@@ -46,9 +46,9 @@ namespace BcCardapioDigital.API.Application.Services
             entity.Descricao = request.Descricao;
             entity.CategoriaId = request.CategoriaId;
 
-            if (request.Foto is not null)
+            if (request.Imagem is not null)
             {
-                var imageUpdate = await TentarAtualizarImage(request.Foto, entity);
+                var imageUpdate = await TentarAtualizarImage(request.Imagem, entity);
                 if (!imageUpdate)
                 {
                     message = "Produto Atualizado, mas houve um problema ao tentar atualizar imagem"; 
@@ -74,7 +74,7 @@ namespace BcCardapioDigital.API.Application.Services
         public async Task<Response<Produto?>> DeletarProduto(RemoverProdutoRequest request)
         {
             var entity = await _repositorio.BuscarProduto(request.ProdutoId) ?? throw new NotFoundException("Produto não encontrado");
-
+            var imagemUrl = entity.Imagem;
 
             var result = await _repositorio.RemoverProduto(entity);
             if (!result)
@@ -82,9 +82,9 @@ namespace BcCardapioDigital.API.Application.Services
                 return new Response<Produto?>(null, 500, "Não foi possivel remover o produto no momento");
             }
 
-            await _imageService.RemoverImagem(entity.Imagem);
+            await _imageService.RemoverImagem(imagemUrl);
 
-            return new Response<Produto?>(null, 201, "Produto Removida Com Sucesso");
+            return new Response<Produto?>(null, 201, "Produto Removido Com Sucesso");
         }
 
         public async Task<Response<List<Produto>>> ListarProdutos()

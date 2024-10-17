@@ -23,7 +23,7 @@ namespace BcCardapioDigital.API.Infrastructure
                 entity.Property(c => c.Nome)
                       .HasMaxLength(150)
                       .IsRequired();
-                entity.Property(c => c.ImageUrl)
+                entity.Property(c => c.Imagem)
                       .IsRequired();
 
                 // Relacionamento 1:N com Produto
