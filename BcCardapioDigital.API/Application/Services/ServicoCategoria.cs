@@ -54,7 +54,7 @@ namespace BcCardapioDigital.API.Application.Services
 
             var result = await _repositorio.Atualizar(entity);
 
-            return result ? new Response<Categoria?>(null, 201, message) : new Response<Categoria?>(null, 500, "Nao foi possivel atualizar a categoria");
+            return result ? new Response<Categoria?>(entity, 201, message) : new Response<Categoria?>(null, 500, "Nao foi possivel atualizar a categoria");
         }
 
 
@@ -76,8 +76,18 @@ namespace BcCardapioDigital.API.Application.Services
             }
 
             var result = await _repositorio.RemoverCategoria(entity);
+            if(!result)
+            {
+                return new Response<Categoria?>(null, 500, "Nao foi possivel atualizar a categoria");
+            }
+            var imagemUrl = entity.Imagem;
+            result = await _imageService.RemoverImagem(imagemUrl);
+            if (!result)
+            {
+                return new Response<Categoria?>(null, 201, " Categoria foi removida, mas nao foi possivel apagar sua imagem");
+            }
 
-            return result ? new Response<Categoria?>(null, 201, " Categoria Removida Com Sucesso") : new Response<Categoria?>(null, 500, "Nao foi possivel atualizar a categoria");
+            return new Response<Categoria?>(null, 201, " Categoria Removida Com Sucesso") ;
         }
 
         public async Task<Response<List<Categoria>>> ListarCategorias()

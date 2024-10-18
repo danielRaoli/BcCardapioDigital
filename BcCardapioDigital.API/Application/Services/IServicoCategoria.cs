@@ -8,7 +8,7 @@ namespace BcCardapioDigital.API.Application.Services
     {
         Task<Response<Categoria?>> AdicionarCategoria(AddCategoriaRequest request);
         Task<Response<Categoria?>> BuscarCategoria(BuscarCategoriaRequest request);
-        Task<Response<List<Categoria?>>> ListarCategorias();
+        Task<Response<List<Categoria>>> ListarCategorias();
         Task<Response<Categoria?>> DeletarCategoria(RemoverCategoriaRequest request);
         Task<Response<Categoria?>> AtualizarCategoria(AtualizarCategoriaRequest request);
     }
