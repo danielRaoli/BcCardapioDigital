@@ -69,8 +69,8 @@ namespace BcCardapioDigital.API.Application.Services
         public async Task<Response<Categoria?>> DeletarCategoria(RemoverCategoriaRequest request)
         {
             var entity = await _repositorio.BuscarCategoria(request.CategoriaId) ?? throw new NotFoundException("Categoria nao encontrada");
-
-            if(!(entity.Produtos.Count > 0))
+            //se a categoria possuir produtos
+            if(entity.Produtos.Count > 0)
             {
                 return new Response<Categoria?>(null, 400, "Não é possivel remover uma categoria que tem produtos, mova os produtos para outra categoria ou remova-os");
             }
