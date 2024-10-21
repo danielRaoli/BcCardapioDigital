@@ -58,7 +58,7 @@ namespace BcCardapioDigital.API.Application.Services
 
             var result = await _repositorio.Atualizar(entity);
 
-            return result ? new Response<Produto?>(null, 201, message) : new Response<Produto?>(null, 500, "Nao foi possivel atualizar a categoria");
+            return result ? new Response<Produto?>(entity, 201, message) : new Response<Produto?>(null, 500, "Nao foi possivel atualizar o produto");
 
         }
 
