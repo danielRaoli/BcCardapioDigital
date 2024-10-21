@@ -16,6 +16,7 @@ namespace BcCardapioDigital.API.Application.Services
         {
             var restaurante = await _repositorio.Buscar() ?? throw new NotFoundException("Restaurante nao encontrado");
 
+            restaurante.Nome = request.Nome;    
             restaurante.Endereco = request.Endereco;
             restaurante.Telefone = request.Telefone;
             restaurante.Email = request.Email;
