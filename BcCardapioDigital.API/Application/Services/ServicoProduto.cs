@@ -95,6 +95,13 @@ namespace BcCardapioDigital.API.Application.Services
 
         }
 
+        public async Task<Response<List<Produto>>> ProdutosPopulares()
+        {
+            var response = await _repositorio.ProdutosPopulares();
+
+            return new Response<List<Produto>>(response);
+        }
+
         private async Task<bool> TentarAtualizarImage(IFormFile? foto, Produto entity)
         {
             var imageUrl = await _imageService.UploadImagem(foto!);

@@ -38,7 +38,7 @@ namespace BcCardapioDigital.API.Infrastructure
                     ProdutoId = g.Key,
                     Name = _context.Produtos.FirstOrDefault(p => p.Id == g.Key)!.Nome,
                     QuantidadeVendida = g.Sum(p => p.Quantidade)
-                }).ToListAsync();
+                }).OrderByDescending(g => g.QuantidadeVendida).Take(10).ToListAsync();
 
             return produtosMaisVendidos;
         }

@@ -1,5 +1,6 @@
 ﻿using BcCardapioDigital.API.Domain.Entities;
 using BcCardapioDigital.API.Domain.Repositories;
+using BcCardapioDigital.API.Domain.ValueObjects;
 using Microsoft.EntityFrameworkCore;
 
 namespace BcCardapioDigital.API.Infrastructure
@@ -37,10 +38,53 @@ namespace BcCardapioDigital.API.Infrastructure
             }
 
             await _context.Produtos.AddAsync(entity);
-           
+
             var result = await _context.SaveChangesAsync();
 
             return result > 0;
+        }
+        public async Task<List<Produto>> ProdutosPopulares()
+        {
+            DateTime firstDay = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
+            DateTime lastDay = firstDay.AddMonths(1).AddDays(-1);
+
+            var query = _context.ItemPedidos
+                    .Join(
+                        _context.Pedidos,
+                        itemPedido => itemPedido.PedidoId,
+                        pedido => pedido.Id,
+                        (itemPedido, pedido) => new { itemPedido, pedido }
+                    )
+                    .AsQueryable();
+
+
+            query = query.Where(p => p.pedido.Data >= firstDay  && p.pedido.Data <= lastDay);
+
+
+            // Agrupa os produtos pelos mais vendidos e obtém a contagem de vendas
+            var produtosMaisVendidos = await query
+                .GroupBy(p => p.itemPedido.ProdutoId)
+                .Select(g => new
+                {
+                    ProdutoId = g.Key,
+                    TotalVendas = g.Count() // Contagem de vendas por produto
+                })
+                .OrderByDescending(g => g.TotalVendas) // Ordena pelos mais vendidos
+                .Take(8) // Pega os 8 mais vendidos
+                .ToListAsync();
+
+            // Recupera os detalhes dos produtos mais vendidos
+            var produtos = new List<Produto>();
+            foreach (var item in produtosMaisVendidos)
+            {
+                var produto = await _context.Produtos.FirstOrDefaultAsync(p => p.Id == item.ProdutoId);
+                if (produto != null)
+                {
+                    produtos.Add(produto);
+                }
+            }
+
+            return produtos;
         }
 
         public async Task<List<Produto>> ListarProdutos()
