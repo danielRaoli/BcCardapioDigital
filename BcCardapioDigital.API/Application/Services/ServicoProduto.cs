@@ -84,7 +84,7 @@ namespace BcCardapioDigital.API.Application.Services
 
             await _imageService.RemoverImagem(imagemUrl);
 
-            return new Response<Produto?>(null, 201, "Produto Removido Com Sucesso");
+            return new Response<Produto?>(null, 200, "Produto Removido Com Sucesso");
         }
 
         public async Task<Response<List<Produto>>> ListarProdutos()

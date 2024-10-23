@@ -18,7 +18,7 @@ namespace BcCardapioDigital.API.Infrastructure
 
         public async Task<Categoria?> BuscarCategoria(long id)
         {
-            return await _context.Categorias.FirstOrDefaultAsync(c => c.Id == id);
+            return await _context.Categorias.AsNoTracking().Include(c => c.Produtos).FirstOrDefaultAsync(c => c.Id == id);
         }
 
         public async Task<bool> CriarCategoria(Categoria entity)
@@ -31,7 +31,7 @@ namespace BcCardapioDigital.API.Infrastructure
 
         public async Task<List<Categoria>> ListarCategorias()
         {
-            return await _context.Categorias.AsNoTracking().Include(c => c.Produtos).ToListAsync();
+            return await _context.Categorias.AsNoTracking().ToListAsync();
         }
 
         public async Task<bool> RemoverCategoria(Categoria entity)
