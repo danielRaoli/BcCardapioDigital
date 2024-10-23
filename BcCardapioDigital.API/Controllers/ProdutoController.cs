@@ -48,6 +48,18 @@ namespace BcCardapioDigital.API.Controllers
 
         }
 
+        [HttpGet("/popular")]
+        [AllowAnonymous]
+        public async Task<IActionResult> GetPopular()
+        {
+        
+
+            var result = await _servico.ProdutosPopulares();
+
+            return Ok(result);
+
+        }
+
         [HttpGet]
         [AllowAnonymous]
         public async Task<IActionResult> GetAll()
