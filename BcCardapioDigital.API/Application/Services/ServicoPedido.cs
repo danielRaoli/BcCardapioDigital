@@ -45,7 +45,8 @@ namespace BcCardapioDigital.API.Application.Services
 
         public async Task<Response<string?>> FazerPedido(FazerPedidoRequest request)
         {
-            var diaSemana = DateTime.Now.DayOfWeek;
+            request.Data = DateTime.Now;    
+            var diaSemana = request.Data.DayOfWeek;
             var horarioFuncionamento = await _repositorioHorario.Buscar(diaSemana) ?? throw new NotFoundException("Erro ao consultar horario de funcionamento do estabelecimento, tente novamente");
 
 
