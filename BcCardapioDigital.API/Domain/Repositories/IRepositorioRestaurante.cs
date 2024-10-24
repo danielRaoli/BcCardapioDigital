@@ -8,10 +8,10 @@ namespace BcCardapioDigital.API.Domain.Repositories
         Task<Restaurante?> Buscar();
         Task<bool> Atualizar(Restaurante entity);
 
-        Task<List<ProdutoMaisVendido>> ProdutosMaisVendido(DateTime? startDate, DateTime? EndDate);
-        Task<int> TotalPedidos(DateTime? startDate, DateTime? EndDate);
-        Task<decimal> DinheiroRecebido(DateTime? startDate, DateTime? EndDate); 
-        Task<Dictionary<int, decimal>> VendasPorMes(int? year);
+        Task<List<ProdutoMaisVendido>> ProdutosMaisVendido(DateTime startDate, DateTime EndDate);
+        Task<int> TotalPedidos(DateTime startDate, DateTime EndDate);
+        Task<decimal> DinheiroRecebido(DateTime startDate, DateTime EndDate); 
+        Task<Dictionary<int, decimal>> VendasPorMes(int year);
     }
     
 }

@@ -9,8 +9,8 @@ namespace BcCardapioDigital.API.Application.Services
     public class ServicoRestaurante(IRepositorioRestaurante repositorio) : IServicoRestaurante
     {
         private readonly IRepositorioRestaurante _repositorio = repositorio;
-        private static DateTime _firstDay = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
-        private static DateTime _lastDay = _firstDay.AddMonths(1).AddDays(-1);
+        private static DateTime _firstDay = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1, 0, 0, 0, DateTimeKind.Utc);
+        private static DateTime _lastDay = _firstDay.AddMonths(1).AddDays(-1).Date.AddHours(23).AddMinutes(59).AddSeconds(59).ToUniversalTime();
         private static int _year = DateTime.Now.Year;
         public async Task<Response<Restaurante?>> AtualizarRestaurante(AtualizarRestauranteRequest request)
         {
@@ -27,16 +27,16 @@ namespace BcCardapioDigital.API.Application.Services
            new Response<Restaurante?>(null, 200, "Restaurante Atualizado Com Sucesso") : new Response<Restaurante?>(null, 500, "Nao foi possivel atualizar os dados do restaurante no momento");
         }
 
-        public async Task<Response<DashBoardResponse>> BuscarDadosDashBoard(DateTime? startDate = null, DateTime? endDate = null, int? year = null)
+        public async Task<Response<DashBoardResponse>> BuscarDadosDashBoard(DateTime? startDate , DateTime? endDate, int? year)
         {
             startDate ??= _firstDay;
             endDate ??= _lastDay;
             year ??= _year;
 
-            var totalPedidos = await _repositorio.TotalPedidos(startDate, endDate);
-            var dinheiroRecebido = await _repositorio.DinheiroRecebido(startDate, endDate);
-            var produtosMaisVendidos = await _repositorio.ProdutosMaisVendido(startDate, endDate);
-            var dinheiroAcumuladoPorMes = await _repositorio.VendasPorMes(year); 
+            var totalPedidos = await _repositorio.TotalPedidos(startDate.Value, endDate.Value);
+            var dinheiroRecebido = await _repositorio.DinheiroRecebido(startDate.Value, endDate.Value);
+            var produtosMaisVendidos = await _repositorio.ProdutosMaisVendido(startDate.Value, endDate.Value);
+            var dinheiroAcumuladoPorMes = await _repositorio.VendasPorMes(year.Value); 
 
             var dashBoard = new DashBoardResponse { TotalPedidos = totalPedidos, TotalVendas = dinheiroRecebido, ProdutosMaisVendidos =  produtosMaisVendidos, ValoresArrecadadosMes = dinheiroAcumuladoPorMes };
             return new Response<DashBoardResponse>(dashBoard);

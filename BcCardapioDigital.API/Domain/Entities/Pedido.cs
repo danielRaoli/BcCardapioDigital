@@ -14,9 +14,15 @@ namespace BcCardapioDigital.API.Domain.Entities
         public FormaDePagamento FormaDePagamento { get; set; }
         public string Code { get; private set; } = string.Empty;
         public DateTime Data { get; set; }
-        public decimal TotalPrice => Items.Sum(i => i.PrecoUnitario * i.Quantidade );
+        public decimal TotalPrice { get; set; }
        
 
+        public void GerarPreco()
+        {
+            foreach (var item in Items) {
+                TotalPrice += item.PrecoUnitario * item.Quantidade;
+            }
+        }
 
         public void GerarCodigo()
         {

@@ -45,8 +45,8 @@ namespace BcCardapioDigital.API.Infrastructure
         }
         public async Task<List<Produto>> ProdutosPopulares()
         {
-            DateTime firstDay = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
-            DateTime lastDay = firstDay.AddMonths(1).AddDays(-1);
+            DateTime firstDay = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1, 0, 0, 0, DateTimeKind.Utc);
+            DateTime lastDay = firstDay.AddMonths(1).AddDays(-1).Date.AddHours(23).AddMinutes(59).AddSeconds(59).ToUniversalTime();
 
             var query = _context.ItemPedidos
                     .Join(

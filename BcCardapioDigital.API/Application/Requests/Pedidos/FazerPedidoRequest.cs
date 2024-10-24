@@ -19,7 +19,7 @@ namespace BcCardapioDigital.API.Application.Requests.Pedidos
         public DateTime Data { get; set; }
         public Pedido ToEntity()
         {
-            return new Pedido {TelefoneCliente = this.TelefoneCliente, NomeCliente = this.NomeCliente, FormaDePagamento = this.FormaDePagamento, Endereco = this.Endereco, Items = this.Items.Select(i => i.ToEntity()).ToList(), Data = DateTime.Now };
+            return new Pedido {TelefoneCliente = this.TelefoneCliente, NomeCliente = this.NomeCliente, FormaDePagamento = this.FormaDePagamento, Endereco = this.Endereco, Items = this.Items.Select(i => i.ToEntity()).ToList(), Data = DateTime.Now.ToUniversalTime() };
         }
     }
     public record ItemPedidoRequest

@@ -24,13 +24,16 @@ namespace BcCardapioDigital.API.Infrastructure
             return restaurante;
         }
 
-        public async Task<decimal> DinheiroRecebido(DateTime? startDate, DateTime? EndDate)
+        public async Task<decimal> DinheiroRecebido(DateTime startDate, DateTime endDate)
         {
-            var dinheiroRecebido = await _context.Pedidos.Where(p => p.Data >= startDate && p.Data <= EndDate && p.Status != Domain.Enums.Status.Cancelado).SumAsync(p => p.TotalPrice);
+            var dinheiroRecebido = await _context.Pedidos
+                .Where(p => p.Data >= startDate.ToUniversalTime() && p.Data <= endDate.ToUniversalTime() && p.Status != Domain.Enums.Status.Cancelado)
+                .SumAsync(p => p.TotalPrice);
+
             return dinheiroRecebido;
         }
 
-        public async Task<List<ProdutoMaisVendido>> ProdutosMaisVendido(DateTime? startDate, DateTime? EndDate)
+        public async Task<List<ProdutoMaisVendido>> ProdutosMaisVendido(DateTime startDate, DateTime EndDate)
         {
             var produtosMaisVendidos = await _context.ItemPedidos.GroupBy(p => p.ProdutoId)
                 .Select(g => new ProdutoMaisVendido
@@ -43,15 +46,15 @@ namespace BcCardapioDigital.API.Infrastructure
             return produtosMaisVendidos;
         }
 
-        public async Task<int> TotalPedidos(DateTime? startDate, DateTime? EndDate)
+        public async Task<int> TotalPedidos(DateTime startDate, DateTime EndDate)
         {
-            var totalPedidos = await _context.Pedidos.Where(p => p.Data >= startDate && p.Data <= EndDate && p.Status != Domain.Enums.Status.Cancelado).CountAsync();
+            var totalPedidos = await _context.Pedidos.Where(p => p.Data >= startDate.ToUniversalTime() && p.Data <= EndDate.ToUniversalTime() && p.Status != Domain.Enums.Status.Cancelado).CountAsync();
 
             return totalPedidos;
         }
 
 
-        public async Task<Dictionary<int, decimal>> VendasPorMes(int? year)
+        public async Task<Dictionary<int, decimal>> VendasPorMes(int year)
         {
             var vendasPorMes = await _context.Pedidos.Where(p => p.Data.Year == year)
                 .GroupBy(p => p.Data.Month)

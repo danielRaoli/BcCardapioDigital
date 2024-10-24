@@ -67,6 +67,8 @@ namespace BcCardapioDigital.API.Application.Services
             }
 
             var entity = request.ToEntity();
+            entity.GerarPreco();
+
             var result = await _repositorio.CriarPedido(entity);
 
             return result.IsNullOrEmpty() ? new Response<string?>(null, 500, "Nao foi possivel concluir o pedido no momento") : new Response<string?>(result, 200, "Pedido feito com sucesso");
