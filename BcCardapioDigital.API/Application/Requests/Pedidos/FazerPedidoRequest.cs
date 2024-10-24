@@ -9,14 +9,17 @@ namespace BcCardapioDigital.API.Application.Requests.Pedidos
     {
         [Required(ErrorMessage = "preencha os campos obrigatorios")]
         public FormaDePagamento FormaDePagamento { get; set; } = FormaDePagamento.NaEntrega;
-        [Phone(ErrorMessage = "Insira um numero de telefone valido")]
+        [Required(ErrorMessage = "Insira um numero de telefone valido")]
         public string TelefoneCliente { get; set; } = string.Empty;
+        [Required(ErrorMessage ="Insira o nome do cliente")]
         public string NomeCliente { get; set; } = string.Empty;
+        [Required(ErrorMessage ="Insira o endereco")]
+        public string Endereco { get; set; } = string.Empty;
         public List<ItemPedidoRequest> Items { get; set; } = [];
         public DateTime Data { get; set; }
         public Pedido ToEntity()
         {
-            return new Pedido {TelefoneCliente = this.TelefoneCliente, NomeCliente = this.NomeCliente, FormaDePagamento = this.FormaDePagamento, Items = this.Items.Select(i => i.ToEntity()).ToList(), Data = DateTime.Now };
+            return new Pedido {TelefoneCliente = this.TelefoneCliente, NomeCliente = this.NomeCliente, FormaDePagamento = this.FormaDePagamento, Endereco = this.Endereco, Items = this.Items.Select(i => i.ToEntity()).ToList(), Data = DateTime.Now };
         }
     }
     public record ItemPedidoRequest
