@@ -89,7 +89,7 @@ namespace BcCardapioDigital.API.Infrastructure
 
         public async Task<List<Produto>> ListarProdutos()
         {
-            return await _context.Produtos.AsNoTracking().ToListAsync();
+            return await _context.Produtos.AsNoTracking().Include(p => p.Categoria).ToListAsync();
         }
 
         public async Task<bool> RemoverProduto(Produto entity)

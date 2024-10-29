@@ -3,13 +3,15 @@ using BcCardapioDigital.API.Application.Requests.Produtos;
 using BcCardapioDigital.API.Application.Responses;
 using BcCardapioDigital.API.Domain.Entities;
 using BcCardapioDigital.API.Domain.Repositories;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace BcCardapioDigital.API.Application.Services
 {
-    public class ServicoProduto(IRepositorioProduto repositorio, IImageService imageService) : IServicoProduto
+    public class ServicoProduto(IRepositorioProduto repositorio, IImageService imageService, IMemoryCache memoryCache) : IServicoProduto
     {
         private IRepositorioProduto _repositorio = repositorio;
         private IImageService _imageService = imageService;
+        private IMemoryCache _memoryCache = memoryCache;
 
         public async Task<Response<Produto?>> AdicionarProduto(CriarProdutoRequest request)
         {
@@ -30,9 +32,18 @@ namespace BcCardapioDigital.API.Application.Services
                 }
             }
 
+            if (!result)
+            {
 
-            return result ? new Response<Produto?>(entity, 201, "Novo Produto Criado Com Sucesso") : new Response<Produto?>(entity, 201, "O produto foi criado mas não foi possível adicionar sua foto no momento");
+                return new Response<Produto?>(entity, 201, "O produto foi criado mas não foi possível adicionar sua foto no momento");
+
+            }
+            _memoryCache.Remove("cacheprodutos");
+
+            return new Response<Produto?>(entity, 201, "Novo Produto Criado Com Sucesso");
         }
+
+
 
         public async Task<Response<Produto?>> AtualizarProduto(AtualizarProdutoRequest request)
         {
@@ -51,14 +62,22 @@ namespace BcCardapioDigital.API.Application.Services
                 var imageUpdate = await TentarAtualizarImage(request.Imagem, entity);
                 if (!imageUpdate)
                 {
-                    message = "Produto Atualizado, mas houve um problema ao tentar atualizar imagem"; 
+                    message = "Produto Atualizado, mas houve um problema ao tentar atualizar imagem";
                 }
 
             }
 
             var result = await _repositorio.Atualizar(entity);
 
-            return result ? new Response<Produto?>(entity, 201, message) : new Response<Produto?>(null, 500, "Nao foi possivel atualizar o produto");
+            if (!result)
+            {
+                return new Response<Produto?>(null, 500, "Nao foi possivel atualizar o produto");
+            }
+
+            _memoryCache.Remove("cacheprodutos");
+
+
+            return new Response<Produto?>(entity, 201, message);
 
         }
 
@@ -83,23 +102,41 @@ namespace BcCardapioDigital.API.Application.Services
             }
 
             await _imageService.RemoverImagem(imagemUrl);
+            _memoryCache.Remove("cacheprodutos");
 
             return new Response<Produto?>(null, 200, "Produto Removido Com Sucesso");
         }
 
-        public async Task<Response<List<Produto>>> ListarProdutos()
+        public async Task<Response<List<ProdutoResponse>>> ListarProdutos()
         {
-            var listaCategorias = await _repositorio.ListarProdutos();
+            var cacheProdutoos = await _memoryCache.GetOrCreateAsync("cacheprodutos", async entry =>
+            {
+                entry.AbsoluteExpiration = DateTime.Now.AddMinutes(240);
+                var listaProduto = await _repositorio.ListarProdutos();
 
-            return new Response<List<Produto>>(listaCategorias);
+                var listaProdutoResponse = listaProduto.Select(p => ProdutoResponse.FromEntity(p)).ToList();
+
+                return listaProdutoResponse;
+
+            });
+            
+
+            return new Response<List<ProdutoResponse>>(cacheProdutoos);
 
         }
 
         public async Task<Response<List<Produto>>> ProdutosPopulares()
         {
-            var response = await _repositorio.ProdutosPopulares();
+            var produtoCache = await _memoryCache.GetOrCreateAsync("cacheprodutospopular", async entry =>
+            {
+                entry.AbsoluteExpiration = DateTime.UtcNow.AddMinutes(240);
 
-            return new Response<List<Produto>>(response);
+                var response = await _repositorio.ProdutosPopulares();
+
+                return response;
+            });
+
+            return new Response<List<Produto>>(produtoCache);
         }
 
         private async Task<bool> TentarAtualizarImage(IFormFile? foto, Produto entity)

@@ -47,6 +47,9 @@ namespace BcCardapioDigital.API.Infrastructure
                       .IsRequired();
                 entity.Property(p => p.Imagem)
                       .IsRequired();
+                entity.HasOne(p => p.Categoria)
+                .WithMany(c => c.Produtos)
+                .HasForeignKey(p => p.CategoriaId);
 
             });
 

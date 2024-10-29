@@ -8,7 +8,7 @@ namespace BcCardapioDigital.API.Application.Services
     {
         Task<Response<Produto?>> AdicionarProduto(CriarProdutoRequest request);
         Task<Response<Produto?>> BuscarProduto(BuscarProdutoRequest request);
-        Task<Response<List<Produto>>> ListarProdutos();
+        Task<Response<List<ProdutoResponse>>> ListarProdutos();
         Task<Response<List<Produto>>> ProdutosPopulares();
         Task<Response<Produto?>> DeletarProduto(RemoverProdutoRequest request);
         Task<Response<Produto?>> AtualizarProduto(AtualizarProdutoRequest request);

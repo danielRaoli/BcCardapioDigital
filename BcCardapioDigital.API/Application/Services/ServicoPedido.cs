@@ -45,7 +45,12 @@ namespace BcCardapioDigital.API.Application.Services
 
         public async Task<Response<string?>> FazerPedido(FazerPedidoRequest request)
         {
-            request.Data = DateTime.Now;    
+            var utcNow = DateTime.UtcNow;
+            var brasiliaTimeZone = TimeZoneInfo.FindSystemTimeZoneById("E. South America Standard Time");
+            var dateTimeInBrazil = TimeZoneInfo.ConvertTimeFromUtc(utcNow, brasiliaTimeZone);
+
+            request.Data = dateTimeInBrazil;
+
             var diaSemana = request.Data.DayOfWeek;
             var horarioFuncionamento = await _repositorioHorario.Buscar(diaSemana) ?? throw new NotFoundException("Erro ao consultar horario de funcionamento do estabelecimento, tente novamente");
 
