@@ -34,7 +34,7 @@ namespace BcCardapioDigital.API.Infrastructure
 
         public async Task<List<Pedido>> BuscarPedidos(Status status, DateTime diaAtual)
         {
-            var pedidos = await _context.Pedidos.Include(p => p.Items).Where(p => p.Status == status && p.Data.Date == diaAtual.Date).ToListAsync();
+            var pedidos = await _context.Pedidos.Include(p => p.Items).Where(p => p.Status == status && p.Data.Date == diaAtual.Date.ToUniversalTime()).ToListAsync();
             return pedidos;
         }
 

@@ -1,17 +1,20 @@
 ﻿using BcCardapioDigital.API.Application.Exceptions;
+using BcCardapioDigital.API.Application.Hubs;
 using BcCardapioDigital.API.Application.Requests.Pedidos;
 using BcCardapioDigital.API.Application.Responses;
 using BcCardapioDigital.API.Domain.Entities;
 using BcCardapioDigital.API.Domain.Repositories;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.IdentityModel.Tokens;
 
 namespace BcCardapioDigital.API.Application.Services
 {
-    public class ServicoPedido(IRepositorioPedido repositorio, IRepositorioHorario repositorioHorario, IRepositorioProduto repositorioProduto) : IServicoPedido
+    public class ServicoPedido(IRepositorioPedido repositorio, IRepositorioHorario repositorioHorario, IRepositorioProduto repositorioProduto, IHubContext<PedidoHub> hub) : IServicoPedido
     {
         private readonly IRepositorioPedido _repositorio = repositorio;
         private readonly IRepositorioHorario _repositorioHorario = repositorioHorario;
         private readonly IRepositorioProduto _repositorioProduto = repositorioProduto;
+        private readonly IHubContext<PedidoHub> _hub = hub;
 
         public async Task<Response<Pedido>> AtualizarStatus(AtualizarStatusPedidoRequest request)
         {
@@ -20,7 +23,14 @@ namespace BcCardapioDigital.API.Application.Services
             pedido.Status = request.StatusAtualizado;
             var result = await _repositorio.AtualizarPedido(pedido);
 
-            return result ? new Response<Pedido>(null, 200, "Pedido atualizado com sucesso") : new Response<Pedido>(null, 500, "Nao foi possivel atualizar o status desse pedido no momento");
+            if (!result)
+            {
+                return new Response<Pedido>(null, 500, "Nao foi possivel atualizar o status desse pedido no momento");
+            }
+
+            await _hub.Clients.All.SendAsync("ReceberAtualizacaoPedido", pedido.Id, pedido.Status);
+
+            return new Response<Pedido>(null, 200, "Pedido atualizado com sucesso");
 
         }
 
@@ -77,7 +87,14 @@ namespace BcCardapioDigital.API.Application.Services
 
             var result = await _repositorio.CriarPedido(entity);
 
-            return result.IsNullOrEmpty() ? new Response<string?>(null, 500, "Nao foi possivel concluir o pedido no momento") : new Response<string?>(result, 200, "Pedido feito com sucesso");
+            if (result.IsNullOrEmpty())
+            {
+                return new Response<string?>(null, 500, "Nao foi possivel concluir o pedido no momento");
+            }
+
+            await _hub.Clients.All.SendAsync("ReceberNovoPedido", entity);
+
+            return new Response<string?>(result, 200, "Pedido feito com sucesso");
         }
     }
 }
