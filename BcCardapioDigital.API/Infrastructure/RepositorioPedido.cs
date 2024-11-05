@@ -34,13 +34,20 @@ namespace BcCardapioDigital.API.Infrastructure
 
         public async Task<List<Pedido>> BuscarPedidos(Status status, DateTime diaAtual)
         {
-            var pedidos = await _context.Pedidos.Include(p => p.Items).Where(p => p.Status == status && p.Data.Date == diaAtual.Date.ToUniversalTime()).ToListAsync();
+            var pedidos = await _context.Pedidos.Include(p => p.Items).Where(p => p.Status == status && p.Data.Date == diaAtual.Date).ToListAsync();
             return pedidos;
         }
 
         public async Task<List<Pedido>> BuscarPedidos()
         {
-            var pedidos = await _context.Pedidos.Where(p => p.Status == Status.Finalizado || p.Status == Status.Cancelado).ToListAsync();
+            DateTime inicioDoDia = DateTime.UtcNow.AddHours(-3).Date;
+            DateTime fimDoDia = inicioDoDia.AddDays(1).AddTicks(-1);
+
+            var pedidos = await _context.Pedidos
+                .Where(p => (p.Status == Status.Finalizado || p.Status == Status.Cancelado)
+                            && p.Data >= inicioDoDia
+                            && p.Data <= fimDoDia)
+                .ToListAsync();
             return pedidos;
         }
 

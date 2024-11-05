@@ -30,7 +30,7 @@ namespace BcCardapioDigital.API.Controllers
 
         }
 
-        
+
         [HttpPost("buscarpedido")]
         public async Task<IActionResult> BuscarPedido([FromBody] BuscarPedidoRequest request)
         {
@@ -66,13 +66,13 @@ namespace BcCardapioDigital.API.Controllers
             return Ok(result);
         }
 
-        [HttpPut]
+        [HttpPut("{pedidoId}")]
         [Authorize]
-        public async Task<IActionResult> AtualizarStatusDoPedido([FromBody] AtualizarStatusPedidoRequest request)
+        public async Task<IActionResult> AtualizarStatusDoPedido([FromBody] AtualizarStatusPedidoRequest request, [FromRoute]int pedidoId)
         {
             try
             {
-
+                request.PedidoId = pedidoId;
                 var result = await _servico.AtualizarStatus(request);
                 return Ok(result);
             }

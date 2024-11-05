@@ -2,6 +2,6 @@
 {
     public record BuscarPedidoRequest
     {
-        public string CodigoProduto { get; set; } = string.Empty;
+        public string CodigoPedido { get; set; } = string.Empty;
     }
 }

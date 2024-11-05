@@ -36,7 +36,7 @@ namespace BcCardapioDigital.API.Application.Services
 
         public async Task<Response<Pedido>> BuscarPedido(BuscarPedidoRequest request)
         {
-            var pedido = await _repositorio.BuscarPedidoPorCodigo(request.CodigoProduto) ?? throw new NotFoundException("Pedido nao encontrado");
+            var pedido = await _repositorio.BuscarPedidoPorCodigo(request.CodigoPedido) ?? throw new NotFoundException("Pedido nao encontrado");
 
             return new Response<Pedido>(pedido);
         }
@@ -55,11 +55,10 @@ namespace BcCardapioDigital.API.Application.Services
 
         public async Task<Response<string?>> FazerPedido(FazerPedidoRequest request)
         {
-            var utcNow = DateTime.UtcNow;
-            var brasiliaTimeZone = TimeZoneInfo.FindSystemTimeZoneById("E. South America Standard Time");
-            var dateTimeInBrazil = TimeZoneInfo.ConvertTimeFromUtc(utcNow, brasiliaTimeZone);
 
-            request.Data = dateTimeInBrazil;
+
+
+            request.Data = DateTime.UtcNow.AddHours(-3);
 
             var diaSemana = request.Data.DayOfWeek;
             var horarioFuncionamento = await _repositorioHorario.Buscar(diaSemana) ?? throw new NotFoundException("Erro ao consultar horario de funcionamento do estabelecimento, tente novamente");

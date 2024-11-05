@@ -8,6 +8,6 @@
         public decimal Preco { get; set; }
         public string Imagem { get; set; } = string.Empty;
         public int CategoriaId { get; set; }
-        public Categoria Categoria { get; set; }
+        public Categoria? Categoria { get; set; }
     }
 }
