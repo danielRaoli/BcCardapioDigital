@@ -6,7 +6,7 @@ namespace BcCardapioDigital.API.Application.Hubs
 {
     public class PedidoHub : Hub
     {
-        public async Task EnviarAtualizacaoPedido(string pedidoId, Status status)
+        public async Task EnviarAtualizacaoPedido(int pedidoId, Status status)
         {
             await Clients.All.SendAsync("ReceberAtualizacaoPedido", pedidoId, status);
         }
