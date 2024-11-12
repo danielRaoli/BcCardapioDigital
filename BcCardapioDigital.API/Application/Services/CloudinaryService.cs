@@ -36,7 +36,7 @@ namespace BcCardapioDigital.API.Application.Services
         public async Task<bool> RemoverImagem(string imageUrl)
         {
 
-            var startIndex = imageUrl.IndexOf("produtos/" + "produtos/".Length);
+            var startIndex = imageUrl.IndexOf("produtos/") + "produtos/".Length;
             var endIndex = imageUrl.IndexOf('.', startIndex);
             var imageId = imageUrl.Substring(startIndex, endIndex - startIndex);
 

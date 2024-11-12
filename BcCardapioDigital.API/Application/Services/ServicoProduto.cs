@@ -101,7 +101,8 @@ namespace BcCardapioDigital.API.Application.Services
                 return new Response<Produto?>(null, 500, "Não foi possivel remover o produto no momento");
             }
 
-            await _imageService.RemoverImagem(imagemUrl);
+            if(!string.IsNullOrEmpty(imagemUrl)) await _imageService.RemoverImagem(imagemUrl);
+
             _memoryCache.Remove("cacheprodutos");
 
             return new Response<Produto?>(null, 200, "Produto Removido Com Sucesso");
