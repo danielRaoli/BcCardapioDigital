@@ -18,7 +18,8 @@ namespace BcCardapioDigital.API.Infrastructure
 
         public async Task<Categoria?> BuscarCategoria(int id)
         {
-            return await _context.Categorias.AsNoTracking().Include(c => c.Produtos).FirstOrDefaultAsync(c => c.Id == id);
+            var categoria = await _context.Categorias.AsNoTracking().Include(c => c.Produtos).FirstOrDefaultAsync(c => c.Id == id);
+            return categoria;
         }
 
         public async Task<bool> CriarCategoria(Categoria entity)

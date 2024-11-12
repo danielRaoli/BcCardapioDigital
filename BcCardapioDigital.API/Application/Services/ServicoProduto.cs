@@ -24,6 +24,8 @@ namespace BcCardapioDigital.API.Application.Services
                 return new Response<Produto?>(null, 500, "Não foi possivel criar o produto");
             }
 
+            _memoryCache.Remove("cacheprodutos");
+
             if (request.Imagem is not null)
             {
                 if (await TentarAtualizarImage(request.Imagem, entity))
@@ -38,7 +40,7 @@ namespace BcCardapioDigital.API.Application.Services
                 return new Response<Produto?>(entity, 201, "O produto foi criado mas não foi possível adicionar sua foto no momento");
 
             }
-            _memoryCache.Remove("cacheprodutos");
+           
 
             return new Response<Produto?>(entity, 201, "Novo Produto Criado Com Sucesso");
         }
@@ -101,9 +103,11 @@ namespace BcCardapioDigital.API.Application.Services
                 return new Response<Produto?>(null, 500, "Não foi possivel remover o produto no momento");
             }
 
-            if(!string.IsNullOrEmpty(imagemUrl)) await _imageService.RemoverImagem(imagemUrl);
-
             _memoryCache.Remove("cacheprodutos");
+
+            if (!string.IsNullOrEmpty(imagemUrl) && !imagemUrl.Equals("imagempadrao")) await _imageService.RemoverImagem(imagemUrl);
+
+            
 
             return new Response<Produto?>(null, 200, "Produto Removido Com Sucesso");
         }

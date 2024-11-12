@@ -4,6 +4,7 @@ using BcCardapioDigital.API.Application.Responses;
 using BcCardapioDigital.API.Domain.Entities;
 using BcCardapioDigital.API.Domain.Repositories;
 using Microsoft.Extensions.Caching.Memory;
+using System.Runtime.Intrinsics.X86;
 
 namespace BcCardapioDigital.API.Application.Services
 {
@@ -24,6 +25,8 @@ namespace BcCardapioDigital.API.Application.Services
                 return new Response<Categoria?>(null, 500, "Não foi possivel criar o categoria");
             }
 
+            _memoryCache.Remove("cachecategorias");
+
             if (request.Imagem is not null)
             {
                 if (await TentarAtualizarImage(request.Imagem, entity))
@@ -37,7 +40,7 @@ namespace BcCardapioDigital.API.Application.Services
                 return new Response<Categoria?>(entity, 201, "A Categoria foi criada mas não foi possível adicionar sua foto no momento");
             }
 
-            _memoryCache.Remove("cachecategorias");
+           
 
             return new Response<Categoria?>(entity, 201, "Nova Categoria Criado Com Sucesso");
         }
@@ -95,14 +98,22 @@ namespace BcCardapioDigital.API.Application.Services
             var result = await _repositorio.RemoverCategoria(entity);
             if (!result)
             {
-                return new Response<Categoria?>(null, 500, "Nao foi possivel atualizar a categoria");
+                return new Response<Categoria?>(null, 500, "Nao foi possivel remover a categoria");
             }
+
+            _memoryCache.Remove("cachecategorias");
+
             var imagemUrl = entity.Imagem;
-            result = await _imageService.RemoverImagem(imagemUrl);
+
+            if (!string.IsNullOrEmpty(imagemUrl) && !imagemUrl.Equals("imagempadrao")) result = await _imageService.RemoverImagem(imagemUrl);
+
+
             if (!result)
             {
                 return new Response<Categoria?>(null, 201, " Categoria foi removida, mas nao foi possivel apagar sua imagem");
             }
+
+            
 
             return new Response<Categoria?>(null, 201, " Categoria Removida Com Sucesso");
         }

@@ -13,7 +13,7 @@ var builder = WebApplication.CreateBuilder(args);
 var connectionString = "Host=dpg-cs6k5lrtq21c73du3sug-a;Port=5432;Database=dbcardapio_bqew;Username=dbcardapio_bqew_user;Password=IPhDK2DSeyEfNOtzdYRF6Z3elhe3TPUj;SSL Mode=Require;Trust Server Certificate=true;";
 var externalConnection = "Host=dpg-cs6k5lrtq21c73du3sug-a.oregon-postgres.render.com;Port=5432;Database=dbcardapio_bqew;Username=dbcardapio_bqew_user;Password=IPhDK2DSeyEfNOtzdYRF6Z3elhe3TPUj;SSL Mode=Require;Trust Server Certificate=true;";
 
-builder.Services.AddDbContext<AppDbContext>(opts => opts.UseNpgsql(connectionString));
+builder.Services.AddDbContext<AppDbContext>(opts => opts.UseNpgsql(externalConnection));
 
 builder.Services.AddScoped<IRepositorioCategoria, RepositorioCategoria>();
 builder.Services.AddScoped<IRepositorioProduto, RepositorioProduto>();
