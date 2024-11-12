@@ -23,7 +23,7 @@ namespace BcCardapioDigital.API.Infrastructure
             return result > 0;
         }
 
-        public async Task<Produto?> BuscarProduto(long id)
+        public async Task<Produto?> BuscarProduto(int id)
         {
             return await _context.Produtos.FirstOrDefaultAsync(c => c.Id == id);
         }

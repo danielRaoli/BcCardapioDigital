@@ -16,7 +16,7 @@ namespace BcCardapioDigital.API.Infrastructure
             return result > 0;
         }
 
-        public async Task<Categoria?> BuscarCategoria(long id)
+        public async Task<Categoria?> BuscarCategoria(int id)
         {
             return await _context.Categorias.AsNoTracking().Include(c => c.Produtos).FirstOrDefaultAsync(c => c.Id == id);
         }
