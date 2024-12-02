@@ -10,10 +10,9 @@ using System.Text;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-var connectionString = "Host=dpg-cs6k5lrtq21c73du3sug-a;Port=5432;Database=dbcardapio_bqew;Username=dbcardapio_bqew_user;Password=IPhDK2DSeyEfNOtzdYRF6Z3elhe3TPUj;SSL Mode=Require;Trust Server Certificate=true;";
-var externalConnection = "Host=dpg-cs6k5lrtq21c73du3sug-a.oregon-postgres.render.com;Port=5432;Database=dbcardapio_bqew;Username=dbcardapio_bqew_user;Password=IPhDK2DSeyEfNOtzdYRF6Z3elhe3TPUj;SSL Mode=Require;Trust Server Certificate=true;";
+var connectionString = builder.Configuration.GetConnectionString("sqlserver");
 
-builder.Services.AddDbContext<AppDbContext>(opts => opts.UseNpgsql(externalConnection));
+builder.Services.AddDbContext<AppDbContext>(opts => opts.UseNpgsql("Host=ep-long-salad-a5k62ba4.us-east-2.aws.neon.tech;Database=RestauranteDb;Username=RestauranteDb_owner;Password=cAeqF5Hw3DuC;SslMode=Require;Trust Server Certificate=true;"));
 
 builder.Services.AddScoped<IRepositorioCategoria, RepositorioCategoria>();
 builder.Services.AddScoped<IRepositorioProduto, RepositorioProduto>();
@@ -57,7 +56,7 @@ builder.Services.AddAuthentication(options =>
 
 builder.Services.AddCors(opts => opts.AddPolicy("AppCors", policy =>
 {
-    policy.WithOrigins("http://localhost:5173")
+    policy.WithOrigins("http://localhost:5173", "http://localhost:5174")
     .AllowAnyHeader()
     .AllowAnyMethod()
     .AllowCredentials();
